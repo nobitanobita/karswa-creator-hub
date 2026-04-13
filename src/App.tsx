@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import Projects from "./pages/Projects";
 import Blogs from "./pages/Blogs";
 import Developers from "./pages/Developers";
-import About from "./pages/About";
+
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -26,7 +26,7 @@ const App = () => (
             <Route path="/projects" element={<Projects />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/developers" element={<Developers />} />
-            <Route path="/about" element={<About />} />
+            
             <Route path="/auth" element={<Auth />} />
           </Route>
           <Route path="*" element={<NotFound />} />
