@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Code2, BookOpen, Users, Zap } from "lucide-react";
+import { ArrowRight, Code2, BookOpen, Users, Zap, Plus, PenLine, FolderOpen } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import SectionHeading from "@/components/SectionHeading";
 import ProjectCard from "@/components/ProjectCard";
 import BlogCard from "@/components/BlogCard";
 import DeveloperCard from "@/components/DeveloperCard";
 import { mockProjects, mockBlogs, mockDevelopers, stats } from "@/lib/mock-data";
+import { useAuth } from "@/hooks/useAuth";
 
 const features = [
   { icon: Code2, title: "Ship Projects", desc: "Showcase your work with rich project pages, live demos, and source links." },
@@ -15,7 +16,138 @@ const features = [
   { icon: Zap, title: "Get Discovered", desc: "Featured content, search, and filters help your work reach the right audience." },
 ];
 
+const quickActions = [
+  { icon: Plus, label: "New Project", to: "/dashboard/projects/new", color: "text-primary" },
+  { icon: PenLine, label: "Write Blog", to: "/dashboard/blogs/new", color: "text-primary" },
+  { icon: FolderOpen, label: "My Projects", to: "/dashboard/projects", color: "text-primary" },
+];
+
 const Index = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+
+  // Logged-in home
+  if (user) {
+    return (
+      <div>
+        {/* Welcome Banner */}
+        <section className="py-16 bg-gradient-to-b from-primary/5 to-transparent">
+          <div className="container mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground">
+                Welcome back<span className="text-gradient">!</span>
+              </h1>
+              <p className="mt-2 text-muted-foreground">
+                Here's what's happening in the KARSWA community.
+              </p>
+            </motion.div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+              {quickActions.map((action, i) => (
+                <motion.div
+                  key={action.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1, duration: 0.4 }}
+                >
+                  <Link
+                    to={action.to}
+                    className="flex items-center gap-3 p-4 rounded-xl bg-gradient-card border border-border hover:border-primary/30 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <action.icon size={20} className={action.color} />
+                    </div>
+                    <span className="text-sm font-semibold text-foreground">{action.label}</span>
+                    <ArrowRight size={14} className="ml-auto text-muted-foreground" />
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Stats */}
+        <section className="border-y border-border bg-card/50">
+          <div className="container mx-auto px-6 py-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.4 }}
+                  className="text-center"
+                >
+                  <div className="text-3xl md:text-4xl font-bold text-gradient">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Projects */}
+        <section className="py-20">
+          <div className="container mx-auto px-6">
+            <SectionHeading label="Projects" title="Featured Work" description="Discover outstanding projects built by our community." />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {mockProjects.slice(0, 3).map((p) => (
+                <ProjectCard key={p.id} {...p} />
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                View All Projects <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Latest Blogs */}
+        <section className="py-20 bg-card/30">
+          <div className="container mx-auto px-6">
+            <SectionHeading label="Blog" title="Latest Articles" description="Insights, tutorials, and stories from our developers." />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {mockBlogs.slice(0, 4).map((b) => (
+                <BlogCard key={b.id} {...b} />
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link to="/blogs" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                Read All Articles <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Developers */}
+        <section className="py-20">
+          <div className="container mx-auto px-6">
+            <SectionHeading label="Community" title="Our Developers" description="Meet the builders behind KARSWA." />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {mockDevelopers.slice(0, 6).map((d) => (
+                <DeveloperCard key={d.id} {...d} />
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link to="/developers" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                View All Developers <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Logged-out home (original)
   return (
     <div>
       {/* Hero */}
